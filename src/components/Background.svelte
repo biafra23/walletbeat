@@ -18,6 +18,8 @@
 		hue: Animation<Angle>
 		lightThemeColor: string
 		darkThemeColor: string
+		lightThemeWeight: number
+		darkThemeWeight: number
 	}
 	type PartialBackgroundBlob = Partial<BackgroundBlob> & Pick<BackgroundBlob, 'lightThemeColor' | 'darkThemeColor'>
 	const staticValue = <T,>(staticVal: T): Animation<T> => ({
@@ -42,13 +44,17 @@
 		hue: partialBlob.hue ?? staticValue('0deg'),
 		lightThemeColor: partialBlob.lightThemeColor,
 		darkThemeColor: partialBlob.darkThemeColor,
+		lightThemeWeight: partialBlob.lightThemeWeight ?? 1,
+		darkThemeWeight: partialBlob.darkThemeWeight ?? 1,
 	})
 </script>
 
 
 <div class="background-blobs">
 	{#each Object.entries(blobs).map( ([blobName, blob], index): BackgroundBlob & { id: string; index: number } => ({ id: blobName, index, ...completeBlob(blob) }), ) as blob (blob.id)}
-		<div class="background-blob" id={blob.id} style:--blob-z-index={-1002 - blob.index}>
+		<div class="background-blob" id={blob.id} style:--blob-z-index={-1002 - blob.index}
+			style:--blob-light-theme-weight={blob.lightThemeWeight}
+			style:--blob-dark-theme-weight={blob.darkThemeWeight}>
 			<div
 				class="opacity"
 				style:--opacity-from={blob.opacity.fromValue}
@@ -123,6 +129,8 @@
 	}
 
 	.background-blob {
+		---blob-weight: calc(var(--blob-light-theme-weight) * (1 - var(---theme-dark)) + var(--blob-dark-theme-weight) * var(---theme-dark));
+		opacity: var(---blob-weight);
 		position: absolute;
 		top: -50vh;
 		left: -50vw;
