@@ -103,7 +103,7 @@
 		/>
 	</header>
 
-	<div data-scroll-item="inline-attached underflow-center overflow-start">
+	<div class="table-layout" data-scroll-item="inline-attached underflow-center overflow-start">
 		<Table
 			rows={filteredRows}
 			rowId={(row: Eip7702Row) => row.id}
@@ -293,6 +293,32 @@
 			--scrollItem-inlineDetached-maxSize: 60.5rem;
 			--scrollItem-inlineDetached-paddingStart: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
 			--scrollItem-inlineDetached-paddingEnd: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
+		}
+	}
+
+	@container eip-7702 (inline-size <= 43rem) {
+		.table-layout[data-scroll-item] {
+			max-inline-size: var(--sticky-sizeInline);
+			grid-template-columns: minmax(0, 1fr);
+			justify-items: stretch;
+
+			:global(table) {
+				inline-size: 100%;
+				min-inline-size: 0;
+				table-layout: fixed;
+				box-sizing: border-box;
+			}
+
+			:global(th),
+			:global(td) {
+				padding-inline: 0.25rem;
+				white-space: normal;
+				overflow-wrap: anywhere;
+			}
+		}
+
+		.wallet-info {
+			flex-wrap: wrap;
 		}
 	}
 
