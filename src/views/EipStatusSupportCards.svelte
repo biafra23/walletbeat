@@ -7,7 +7,7 @@
 		eipSupportStatusGroupId,
 	} from '@/schema/eip-support'
 	import { Variant } from '@/schema/variants'
-	import type { CalendarDate } from '@/types/date'
+	import { type CalendarDate, formatCalendarDate } from '@/types/date'
 	import { type CodeSnippetIndex, setCodeSnippetContext } from '@/utils/code-snippet-index'
 
 	// `--rating-unrated`/`--rating-neutral` are low-alpha, made for badge
@@ -75,17 +75,8 @@
 			.map(({ lastRetrieved }) => lastRetrieved)
 			.filter((date): date is CalendarDate => date !== undefined)
 
-		return dates.length > 0 ? dates.toSorted().at(-1) : undefined
+		return dates.toSorted().at(-1)
 	}
-
-	const formatDate = (date: CalendarDate): string =>
-		new Date(date).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			timeZone: 'UTC',
-		})
-
 
 	// Components
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
@@ -170,7 +161,7 @@
 											<div class="card-meta" data-row="wrap gap-3">
 												{#if lastVerified}
 													<span class="last-verified">
-														As of <time datetime={lastVerified}>{formatDate(lastVerified)}</time>
+														As of <time datetime={lastVerified}>{formatCalendarDate(lastVerified)}</time>
 													</span>
 												{/if}
 

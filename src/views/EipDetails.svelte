@@ -18,7 +18,7 @@
 
 	// Functions
 	import { eipEthereumDotOrgUrl, eipFinalForLabel } from '@/schema/eips'
-	import { daysSince } from '@/types/date'
+	import { daysSince, formatCalendarDate } from '@/types/date'
 	import { trimWhitespacePrefix } from '@/types/utils/text'
 
 
@@ -48,12 +48,7 @@
 				<span class="final-since">
 					<strong data-final-since={eip.finalizedDate}>{eipFinalForLabel(daysSince(eip.finalizedDate))}</strong>,
 					since <time datetime={eip.finalizedDate}>{
-						new Date(eip.finalizedDate).toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: 'long',
-							day: 'numeric',
-							timeZone: 'UTC',
-						})
+						formatCalendarDate(eip.finalizedDate)
 					}</time>
 				</span>
 			{/if}
