@@ -293,6 +293,13 @@ Issued At: ${new Date().toISOString()}`;
 		}
 	}
 
+	let scamAlertReturnTab: Exclude<ActiveTab, 'scam-alerts'> = 'transactions'
+
+	function dismissScamAlertDisclaimer() {
+		scamAlertDisclaimer.accepted = false
+		uiState.activeTab = scamAlertReturnTab
+	}
+
 	// Chain switch handlers
 	function openChainSwitchModal(tx: TestTransaction) {
 		chainState.pendingTransaction = tx
@@ -750,7 +757,7 @@ Issued At: ${new Date().toISOString()}`;
 				type="button"
 				class="tab-button"
 				class:active={uiState.activeTab === tab}
-				onclick={() => {
+				onclick={event => {
 					if (tab === 'transactions') {
 						uiState.activeTab = 'transactions'
 
@@ -770,6 +777,10 @@ Issued At: ${new Date().toISOString()}`;
 					} else if (tab === 'tx-simulations') {
 						uiState.activeTab = 'tx-simulations'
 					} else if (tab === 'scam-alerts') {
+						event.currentTarget.focus({ preventScroll: true })
+
+						if (uiState.activeTab !== 'scam-alerts') scamAlertReturnTab = uiState.activeTab
+
 						uiState.activeTab = 'scam-alerts'
 						scamAlertDisclaimer.accepted = false
 
@@ -1001,6 +1012,7 @@ Issued At: ${new Date().toISOString()}`;
 					disclaimerAccepted={scamAlertDisclaimer.accepted}
 					{account}
 					onAcceptDisclaimer={() => { scamAlertDisclaimer.accepted = true }}
+					onDismissDisclaimer={dismissScamAlertDisclaimer}
 					onSendScamAlert={handleSendScamAlert}
 					onSignScamAlert={handleSignScamAlert}
 					onOpenInExplorer={openInExplorer}
