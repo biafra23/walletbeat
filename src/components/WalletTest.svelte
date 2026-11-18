@@ -588,7 +588,23 @@ Issued At: ${new Date().toISOString()}`;
 		}
 	}
 
-	async function runCurrentStep() {
+	let stepActionOrigin: HTMLButtonElement | null = null
+
+	function closeStepResults() {
+		stepTestState.resultsModal.isOpen = false
+
+		const origin = stepActionOrigin
+
+		stepActionOrigin = null
+
+		queueMicrotask(() => {
+			if (document.activeElement === document.body && origin?.isConnected && !origin.disabled) {
+				origin.focus({ preventScroll: true })
+			}
+		})
+	}
+
+	async function runCurrentStep(event: MouseEvent) {
 		const step = getCurrentStep()
 
 		if (!canRunStep(stepTestState.currentStepIndex)) {
@@ -596,6 +612,8 @@ Issued At: ${new Date().toISOString()}`;
 
 			return
 		}
+
+		stepActionOrigin = event.currentTarget instanceof HTMLButtonElement ? event.currentTarget : null
 
 		stepTestState.overallStatus = 'in_progress'
 		stepTestState.error = ''
@@ -1058,7 +1076,7 @@ Issued At: ${new Date().toISOString()}`;
 		overallPassed={stepTestState.resultsModal.overallPassed}
 		hasPartialResults={stepTestState.resultsModal.hasPartialResults}
 		stepResults={stepTestState.resultsModal.stepResults}
-		onClose={() => (stepTestState.resultsModal.isOpen = false)}
+		onClose={closeStepResults}
 	/>
 </section>
 
